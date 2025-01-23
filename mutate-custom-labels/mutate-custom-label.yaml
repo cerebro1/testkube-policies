@@ -1,0 +1,16 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-testworkflow-label
+spec:
+  rules:
+    - name: add-mutated-label
+      match:
+        resources:
+          kinds:
+            - TestWorkflow
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              +(testkube.io/policy-test): kyverno

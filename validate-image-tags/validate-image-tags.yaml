@@ -1,0 +1,21 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-image-tags
+spec:
+  emitWarning: true
+  rules:
+    - name: validate-image-tags
+      match:
+        resources:
+          kinds:
+            - TestWorkflow
+      validate:
+        message: "Using 'latest' tag is not allowed. Please specify a version."
+        failureAction: Audit
+        foreach:
+          - list: "request.object.spec.steps"
+            pattern:
+              # Match 'container.image' field in steps
+              container:
+                image: "!*:latest"
